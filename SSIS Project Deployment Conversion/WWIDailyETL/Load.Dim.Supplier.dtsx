@@ -1,0 +1,1130 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{50857143-E6E1-4E0B-B171-97C96BDF3022}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Load Dim"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="65"
+  DTS:VersionGUID="{7DDE0177-CF9D-4E01-83E1-D30195FE7EB8}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+      DTS:ObjectName="WWI_DW_Destination_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImportersDW;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_Source_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{62943F5D-6E73-4FE6-AE05-20DA33452E77}"
+      DTS:ObjectName="WWI_Source_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImporters;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DF0C5A5E-799C-4CE7-805F-C9281ABEE35F}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{70C1D1F8-D8FA-475E-901E-9A6290DCF38F}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D6607BF5-765C-4910-8312-5CDFE5571A08}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{31FC8EAF-F31A-4139-9451-0F412896F967}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Calculate ETL Cutoff Time backup"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{F0D827FD-56CD-4DE8-B5D4-D9493A306BD7}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Calculate ETL Cutoff Time backup"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Minute&quot;, -5, GETDATE()  )" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Ensure Date Dimension includes current year"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{58667D41-D07E-4E97-9A7C-46A6FD85A7BA}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Ensure Date Dimension includes current year"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+          SQLTask:SqlStatementSource="DECLARE @YearNumber int =  YEAR(SYSDATETIME());&#xA;&#xA;EXEC Integration.PopulateDateDimensionForYear @YearNumber;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Supplier Dimension"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{FCE997C7-481D-4BFC-A54B-B422896844D9}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Supplier Dimension">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{CF8FEB0D-2F6F-4619-AD4E-B12AFCF03634}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Extract Updated Supplier Data to Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Integration_GetSupplierUpdates"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC Integration.GetSupplierUpdates ?, ?
+WITH RESULT SETS
+(
+    (
+        [WWI Supplier ID] int,
+        Supplier nvarchar(100),
+        Category nvarchar(50),
+        [Primary Contact] nvarchar(50),
+        [Supplier Reference] nvarchar(20),
+        [Payment Days] int,
+        [Postal Code] nvarchar(10),
+        [Valid From] datetime2(7),
+        [Valid To] datetime2(7)
+    )
+);</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@LastCutoff:Input",{DF0C5A5E-799C-4CE7-805F-C9281ABEE35F};"@NewCutoff:Input",{31FC8EAF-F31A-4139-9451-0F412896F967};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_Source_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_Source_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid From]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid From]"
+                          name="Valid From"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid To]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid To]"
+                          name="Valid To"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier]"
+                          length="100"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier]"
+                          name="Supplier"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Category]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Category]"
+                          length="50"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Category]"
+                          name="Category"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Primary Contact]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Primary Contact]"
+                          length="50"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Primary Contact]"
+                          name="Primary Contact"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier Reference]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier Reference]"
+                          length="20"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier Reference]"
+                          name="Supplier Reference"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Payment Days]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Payment Days]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Payment Days]"
+                          name="Payment Days"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Postal Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Postal Code]"
+                          length="10"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Postal Code]"
+                          name="Postal Code"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          name="Valid From"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          name="Valid To"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier]"
+                          dataType="wstr"
+                          length="100"
+                          name="Supplier" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Category]"
+                          dataType="wstr"
+                          length="50"
+                          name="Category" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Primary Contact]"
+                          dataType="wstr"
+                          length="50"
+                          name="Primary Contact" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier Reference]"
+                          dataType="wstr"
+                          length="20"
+                          name="Supplier Reference" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Payment Days]"
+                          dataType="i4"
+                          name="Payment Days" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].ExternalColumns[Postal Code]"
+                          dataType="wstr"
+                          length="10"
+                          name="Postal Code" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier]"
+                          name="Supplier" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Category]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Category]"
+                          name="Category" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Primary Contact]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Primary Contact]"
+                          name="Primary Contact" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier Reference]"
+                          dataType="wstr"
+                          length="20"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier Reference]"
+                          name="Supplier Reference" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Payment Days]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Payment Days]"
+                          name="Payment Days" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Postal Code]"
+                          dataType="wstr"
+                          length="10"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Postal Code]"
+                          name="Postal Code" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Valid From]"
+                          name="Valid From"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[Valid To]"
+                          name="Valid To"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Integration_Supplier_Staging"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Integration].[Supplier_Staging]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Valid From]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Valid From"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid From]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid From]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Valid To]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Valid To"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid To]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Valid To]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[WWI Supplier ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Supplier ID"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Supplier]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Supplier"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Category]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Category"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Category]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Category]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Primary Contact]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Primary Contact"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Primary Contact]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Primary Contact]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Supplier Reference]"
+                          cachedDataType="wstr"
+                          cachedLength="20"
+                          cachedName="Supplier Reference"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Reference]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Supplier Reference]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Payment Days]"
+                          cachedDataType="i4"
+                          cachedName="Payment Days"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Payment Days]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Payment Days]" />
+                        <inputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].Columns[Postal Code]"
+                          cachedDataType="wstr"
+                          cachedLength="10"
+                          cachedName="Postal Code"
+                          externalMetadataColumnId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Postal Code]"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output].Columns[Postal Code]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          name="Valid From"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          name="Valid To"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Staging Key]"
+                          dataType="i4"
+                          name="Supplier Staging Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier]"
+                          dataType="wstr"
+                          length="100"
+                          name="Supplier" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Category]"
+                          dataType="wstr"
+                          length="50"
+                          name="Category" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Primary Contact]"
+                          dataType="wstr"
+                          length="50"
+                          name="Primary Contact" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Reference]"
+                          dataType="wstr"
+                          length="20"
+                          name="Supplier Reference" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Payment Days]"
+                          dataType="i4"
+                          name="Payment Days" />
+                        <externalMetadataColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Postal Code]"
+                          dataType="wstr"
+                          length="10"
+                          name="Postal Code" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging.Paths[OLE DB Source Output]"
+                  endId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Get Last Supplier ETL Cutoff Time"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{D1341594-8C3D-4593-B934-A3204C0FA79B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Last Supplier ETL Cutoff Time"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLastETLCutoffTime ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="CutoffTime"
+                SQLTask:DtsVariableName="User::LastETLCutoffTime" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Get Lineage Key"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{64D69878-5250-4182-ACB2-0275FC8D09D3}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Lineage Key"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLineageKey ?, ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LineageKey"
+                SQLTask:DtsVariableName="User::LineageKey" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::TargetETLCutoffTime"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Migrate Staged Supplier Data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{82D72E0B-1D3B-428D-A1CA-9F1ED9537081}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Migrate Staged Supplier Data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+              SQLTask:SqlStatementSource="EXEC Integration.MigrateStagedSupplierData;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Set TableName to Supplier"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:Description="Expression Task"
+          DTS:DTSID="{D141299F-6305-476A-A3DB-42045DCBBB4C}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Set TableName to Supplier"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::TableName] = &quot;Supplier&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Supplier Dimension\Truncate Supplier_Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{A3D40024-F8FA-45AD-8C71-C18A83AB0D24}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Truncate Supplier_Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{363503C8-89C2-437A-A4D0-795B2C10B6B7}"
+              SQLTask:SqlStatementSource="DELETE FROM Integration.Supplier_Staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{45804FFB-D335-4A6F-A5C3-4483FD356913}"
+          DTS:From="Package\Load Supplier Dimension\Set TableName to Supplier"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Supplier Dimension\Get Lineage Key" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{ED846986-51EF-46E3-8FAC-F554E0BCFE29}"
+          DTS:From="Package\Load Supplier Dimension\Get Lineage Key"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Supplier Dimension\Truncate Supplier_Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{58351388-1AC1-40A1-BD7A-3077EE88C410}"
+          DTS:From="Package\Load Supplier Dimension\Truncate Supplier_Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Load Supplier Dimension\Get Last Supplier ETL Cutoff Time" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{6E07455C-4EB8-49FB-B80F-DF3E65601A66}"
+          DTS:From="Package\Load Supplier Dimension\Get Last Supplier ETL Cutoff Time"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{467229F5-34F4-49B3-A4C7-8DA8BE18BC8C}"
+          DTS:From="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Load Supplier Dimension\Migrate Staged Supplier Data" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Trim Any Milliseconds"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{A5D14171-AB75-4394-B28F-D96D219CC02A}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Trim Any Milliseconds"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Millisecond&quot;, 0 - DATEPART(&quot;Millisecond&quot;, @[User::TargetETLCutoffTime]), @[User::TargetETLCutoffTime])" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{DD239ECA-9E2D-4AEA-A522-2D6CA61E3244}"
+      DTS:From="Package\Calculate ETL Cutoff Time backup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Trim Any Milliseconds" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D7C850C4-4DB4-43D2-9C04-C72CFBEE3110}"
+      DTS:From="Package\Ensure Date Dimension includes current year"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Supplier Dimension" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{3062A4BA-28C4-4CB4-8F88-E6247F69F3B8}"
+      DTS:From="Package\Trim Any Milliseconds"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Ensure Date Dimension includes current year" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Calculate ETL Cutoff Time backup"
+          TopLeft="32,5.5" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Ensure Date Dimension includes current year"
+          TopLeft="5.50000000000003,209.5" />
+        <NodeLayout
+          Size="273,42"
+          Id="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Load Supplier Dimension\Get Last Supplier ETL Cutoff Time"
+          TopLeft="23.0000000000001,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Supplier Dimension\Get Lineage Key"
+          TopLeft="64,107.5" />
+        <NodeLayout
+          Size="217,42"
+          Id="Package\Load Supplier Dimension\Migrate Staged Supplier Data"
+          TopLeft="33.5000000000001,515.5" />
+        <NodeLayout
+          Size="205,42"
+          Id="Package\Load Supplier Dimension\Set TableName to Supplier"
+          TopLeft="39.5,5.5" />
+        <NodeLayout
+          Size="203,42"
+          Id="Package\Load Supplier Dimension\Truncate Supplier_Staging"
+          TopLeft="40.5,209.5" />
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint]"
+          TopLeft="142,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 1]"
+          TopLeft="142,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 2]"
+          TopLeft="142,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 3]"
+          TopLeft="142,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension.PrecedenceConstraints[Constraint 4]"
+          TopLeft="142,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="45"
+          IsExpanded="True"
+          PanelSize="284,613"
+          Size="284,658"
+          Id="Package\Load Supplier Dimension"
+          TopLeft="9.00000000000006,311.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Trim Any Milliseconds"
+          TopLeft="61,107.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="151,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="151,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="151,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="216,42"
+          Id="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging"
+          TopLeft="12.5,107.5" />
+        <NodeLayout
+          Size="230,42"
+          Id="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_GetSupplierUpdates"
+          TopLeft="5.50000000000001,5.5" />
+        <EdgeLayout
+          Id="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging.Paths[OLE DB Source Output]"
+          TopLeft="120.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Supplier Dimension\Extract Updated Supplier Data to Staging\Integration_Supplier_Staging">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

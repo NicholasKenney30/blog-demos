@@ -1,0 +1,1397 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{F15D20B7-59DC-4DFE-9603-62C52CB06AF2}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Load Fact Transaction"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="64"
+  DTS:VersionGUID="{CE798704-4673-4115-B5A9-F9AB56761931}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+      DTS:ObjectName="WWI_DW_Destination_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImportersDW;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_Source_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{BE3A2F14-9C29-430E-8E34-10A47C3A6C27}"
+      DTS:ObjectName="WWI_Source_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImporters;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CB8F0EEE-9BB5-442D-8FA7-A73DEC154BF9}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4A38CF04-A184-4D75-9242-C78D0CFD4F30}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F19D0F72-65BA-4B80-B7FA-80CEC80F7808}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{09C3814A-4F81-4AC4-A484-E756E2FC8579}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Calculate ETL Cutoff Time backup"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{800FB206-7F79-45A6-ABD2-7BFF6AD569AC}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Calculate ETL Cutoff Time backup"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Minute&quot;, -5, GETDATE()  )" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Ensure Date Dimension includes current year"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{37E92A0A-A007-44C1-9A58-3E03357CF0EE}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Ensure Date Dimension includes current year"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+          SQLTask:SqlStatementSource="DECLARE @YearNumber int =  YEAR(SYSDATETIME());&#xA;&#xA;EXEC Integration.PopulateDateDimensionForYear @YearNumber;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Transaction Fact"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{F8DD3452-76AF-440B-870A-8A4AC65C6219}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Transaction Fact">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{6DB4C98E-4093-4E87-A6E4-5B4F7025448C}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Extract Updated Transaction Data to Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Integration_GetTransactionUpdates"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC Integration.GetTransactionUpdates ?, ?
+WITH RESULT SETS
+(
+    (
+        [Date Key] date,
+        [WWI Customer Transaction ID] int,
+        [WWI Supplier Transaction ID] int,
+        [WWI Invoice ID] int,
+        [WWI Purchase Order ID] int,
+        [Supplier Invoice Number] nvarchar(20),
+        [Total Excluding Tax] decimal(18,2),
+        [Tax Amount] decimal(18,2),
+        [Total Including Tax] decimal(18,2),
+        [Outstanding Balance] decimal(18,2),
+        [Is Finalized] bit,
+        [WWI Customer ID] int,
+        [WWI Bill To Customer ID] int,
+        [WWI Supplier ID] int,
+        [WWI Transaction Type ID] int,
+        [WWI Payment Method ID] int,
+        [Last Modified When] datetime2(7)
+    )
+);</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@LastCutoff:Input",{CB8F0EEE-9BB5-442D-8FA7-A73DEC154BF9};"@NewCutoff:Input",{09C3814A-4F81-4AC4-A484-E756E2FC8579};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_Source_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_Source_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Invoice ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]"
+                          name="WWI Invoice ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Excluding Tax]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Amount]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Including Tax]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Bill To Customer ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Bill To Customer ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Bill To Customer ID]"
+                          name="WWI Bill To Customer ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Date Key]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Date Key]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Date Key]"
+                          name="Date Key"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer Transaction ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer Transaction ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer Transaction ID]"
+                          name="WWI Customer Transaction ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier Transaction ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier Transaction ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier Transaction ID]"
+                          name="WWI Supplier Transaction ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Purchase Order ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]"
+                          name="WWI Purchase Order ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Supplier Invoice Number]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier Invoice Number]"
+                          length="20"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Supplier Invoice Number]"
+                          name="Supplier Invoice Number"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Outstanding Balance]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Outstanding Balance]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Outstanding Balance]"
+                          name="Outstanding Balance"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Is Finalized]"
+                          dataType="bool"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Is Finalized]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Is Finalized]"
+                          name="Is Finalized"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Transaction Type ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]"
+                          name="WWI Transaction Type ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Payment Method ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Payment Method ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Payment Method ID]"
+                          name="WWI Payment Method ID"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modified When"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Invoice ID]"
+                          dataType="i4"
+                          name="WWI Invoice ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Excluding Tax]"
+                          dataType="numeric"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Amount]"
+                          dataType="numeric"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Including Tax]"
+                          dataType="numeric"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Bill To Customer ID]"
+                          dataType="i4"
+                          name="WWI Bill To Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Date Key]"
+                          dataType="dbDate"
+                          name="Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer Transaction ID]"
+                          dataType="i4"
+                          name="WWI Customer Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier Transaction ID]"
+                          dataType="i4"
+                          name="WWI Supplier Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          name="WWI Purchase Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Supplier Invoice Number]"
+                          dataType="wstr"
+                          length="20"
+                          name="Supplier Invoice Number" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Outstanding Balance]"
+                          dataType="numeric"
+                          name="Outstanding Balance"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[Is Finalized]"
+                          dataType="bool"
+                          name="Is Finalized" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          name="WWI Transaction Type ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Payment Method ID]"
+                          dataType="i4"
+                          name="WWI Payment Method ID" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Date Key]"
+                          dataType="dbDate"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Date Key]"
+                          name="Date Key" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer Transaction ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer Transaction ID]"
+                          name="WWI Customer Transaction ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier Transaction ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier Transaction ID]"
+                          name="WWI Supplier Transaction ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Invoice ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Invoice ID]"
+                          name="WWI Invoice ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Purchase Order ID]"
+                          name="WWI Purchase Order ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier Invoice Number]"
+                          dataType="wstr"
+                          length="20"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Supplier Invoice Number]"
+                          name="Supplier Invoice Number" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Total Excluding Tax]"
+                          dataType="numeric"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Total Excluding Tax]"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Amount]"
+                          dataType="numeric"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Amount]"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Total Including Tax]"
+                          dataType="numeric"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Total Including Tax]"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Outstanding Balance]"
+                          dataType="numeric"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Outstanding Balance]"
+                          name="Outstanding Balance"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Is Finalized]"
+                          dataType="bool"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Is Finalized]"
+                          name="Is Finalized" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Bill To Customer ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Bill To Customer ID]"
+                          name="WWI Bill To Customer ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Transaction Type ID]"
+                          name="WWI Transaction Type ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Payment Method ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Payment Method ID]"
+                          name="WWI Payment Method ID" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Integration_Transaction_Staging"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Integration].[Transaction_Staging]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Last Modified When]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Last Modified When"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modified When]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Invoice ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Invoice ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Invoice ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Total Excluding Tax]"
+                          cachedDataType="numeric"
+                          cachedName="Total Excluding Tax"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Excluding Tax]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Tax Amount]"
+                          cachedDataType="numeric"
+                          cachedName="Tax Amount"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Amount]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Total Including Tax]"
+                          cachedDataType="numeric"
+                          cachedName="Total Including Tax"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Including Tax]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Customer ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Customer ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Bill To Customer ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Bill To Customer ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Bill To Customer ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Bill To Customer ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Date Key]"
+                          cachedDataType="dbDate"
+                          cachedName="Date Key"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Date Key]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Date Key]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Customer Transaction ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Customer Transaction ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer Transaction ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer Transaction ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Supplier Transaction ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Supplier Transaction ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier Transaction ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier Transaction ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Purchase Order ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Purchase Order ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Purchase Order ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Supplier Invoice Number]"
+                          cachedDataType="wstr"
+                          cachedLength="20"
+                          cachedName="Supplier Invoice Number"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Invoice Number]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Supplier Invoice Number]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Outstanding Balance]"
+                          cachedDataType="numeric"
+                          cachedName="Outstanding Balance"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Outstanding Balance]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Outstanding Balance]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[Is Finalized]"
+                          cachedDataType="bool"
+                          cachedName="Is Finalized"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Is Finalized]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[Is Finalized]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Supplier ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Supplier ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Transaction Type ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Transaction Type ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Transaction Type ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]" />
+                        <inputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].Columns[WWI Payment Method ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Payment Method ID"
+                          externalMetadataColumnId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Payment Method ID]"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output].Columns[WWI Payment Method ID]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modified When"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Customer Key]"
+                          dataType="i4"
+                          name="Customer Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Bill To Customer Key]"
+                          dataType="i4"
+                          name="Bill To Customer Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Invoice ID]"
+                          dataType="i4"
+                          name="WWI Invoice ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Excluding Tax]"
+                          dataType="numeric"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Amount]"
+                          dataType="numeric"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Including Tax]"
+                          dataType="numeric"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Bill To Customer ID]"
+                          dataType="i4"
+                          name="WWI Bill To Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Transaction Staging Key]"
+                          dataType="i8"
+                          name="Transaction Staging Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Date Key]"
+                          dataType="dbDate"
+                          name="Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Key]"
+                          dataType="i4"
+                          name="Supplier Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Transaction Type Key]"
+                          dataType="i4"
+                          name="Transaction Type Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Payment Method Key]"
+                          dataType="i4"
+                          name="Payment Method Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer Transaction ID]"
+                          dataType="i4"
+                          name="WWI Customer Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier Transaction ID]"
+                          dataType="i4"
+                          name="WWI Supplier Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          name="WWI Purchase Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Invoice Number]"
+                          dataType="wstr"
+                          length="20"
+                          name="Supplier Invoice Number" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Outstanding Balance]"
+                          dataType="numeric"
+                          name="Outstanding Balance"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Is Finalized]"
+                          dataType="bool"
+                          name="Is Finalized" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          name="WWI Transaction Type ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Payment Method ID]"
+                          dataType="i4"
+                          name="WWI Payment Method ID" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging.Paths[OLE DB Source Output]"
+                  endId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Get Last Movement ETL Cutoff Time"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{735A84DB-23CF-4326-9A7D-7F30DF94F290}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Last Movement ETL Cutoff Time"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLastETLCutoffTime ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="CutoffTime"
+                SQLTask:DtsVariableName="User::LastETLCutoffTime" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Get Lineage Key"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{2F543FD1-946D-4369-BC55-7305B991B7D4}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Lineage Key"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLineageKey ?, ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LineageKey"
+                SQLTask:DtsVariableName="User::LineageKey" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::TargetETLCutoffTime"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Migrate Staged Transaction Data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{03C66831-1A1B-4DB2-8B06-850BB4F1182E}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Migrate Staged Transaction Data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+              SQLTask:SqlStatementSource="EXEC Integration.MigrateStagedTransactionData;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Set TableName to Transaction"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:Description="Expression Task"
+          DTS:DTSID="{CCDB43DB-CC8B-46CA-9269-7DCBDEF0805F}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Set TableName to Transaction"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::TableName] = &quot;Transaction&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Transaction Fact\Truncate Transaction_Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{DDCBEEC6-3EFF-4E69-A7D0-2CD94A4A74D9}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Truncate Transaction_Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11D7553C-A5C4-4BF5-B8DD-3DA13CCFC6E4}"
+              SQLTask:SqlStatementSource="DELETE FROM Integration.Transaction_Staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Transaction Fact.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{5B9AF53D-9634-4F76-91C1-623ACFAC14C5}"
+          DTS:From="Package\Load Transaction Fact\Set TableName to Transaction"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Transaction Fact\Get Lineage Key" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{05A6B385-C443-4CFD-A65B-10F82ECF6021}"
+          DTS:From="Package\Load Transaction Fact\Get Lineage Key"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Transaction Fact\Truncate Transaction_Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{FECABFE6-6F5A-4C58-8EC0-E524CA5AD3C5}"
+          DTS:From="Package\Load Transaction Fact\Truncate Transaction_Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Load Transaction Fact\Get Last Movement ETL Cutoff Time" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{F8BFB4C4-7BA6-4A31-A923-4565C359DD3E}"
+          DTS:From="Package\Load Transaction Fact\Get Last Movement ETL Cutoff Time"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{5B0C6A1F-1F87-4987-B261-06B0E5ED7821}"
+          DTS:From="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Load Transaction Fact\Migrate Staged Transaction Data" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Trim Any Milliseconds"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{5F350711-E4DE-457F-A036-23EED08876AA}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Trim Any Milliseconds"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Millisecond&quot;, 0 - DATEPART(&quot;Millisecond&quot;, @[User::TargetETLCutoffTime]), @[User::TargetETLCutoffTime])" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{21F26956-F788-4F99-9F2A-7F2C0B3E145C}"
+      DTS:From="Package\Calculate ETL Cutoff Time backup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Trim Any Milliseconds" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{970F44A0-5B49-4F9C-BC35-774BC3A87D42}"
+      DTS:From="Package\Ensure Date Dimension includes current year"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Transaction Fact" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{EE93B843-8A27-4E0A-A227-66A7079DB202}"
+      DTS:From="Package\Trim Any Milliseconds"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Ensure Date Dimension includes current year" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Calculate ETL Cutoff Time backup"
+          TopLeft="36.5,5.5" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Ensure Date Dimension includes current year"
+          TopLeft="10.0000000000001,209.5" />
+        <NodeLayout
+          Size="289,42"
+          Id="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="249,42"
+          Id="Package\Load Transaction Fact\Get Last Movement ETL Cutoff Time"
+          TopLeft="25.5000000000001,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Transaction Fact\Get Lineage Key"
+          TopLeft="72,107.5" />
+        <NodeLayout
+          Size="233,42"
+          Id="Package\Load Transaction Fact\Migrate Staged Transaction Data"
+          TopLeft="33.5000000000001,515.5" />
+        <NodeLayout
+          Size="221,42"
+          Id="Package\Load Transaction Fact\Set TableName to Transaction"
+          TopLeft="39.5,5.5" />
+        <NodeLayout
+          Size="220,42"
+          Id="Package\Load Transaction Fact\Truncate Transaction_Staging"
+          TopLeft="40,209.5" />
+        <EdgeLayout
+          Id="Package\Load Transaction Fact.PrecedenceConstraints[Constraint]"
+          TopLeft="150,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 1]"
+          TopLeft="150,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 2]"
+          TopLeft="150,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 3]"
+          TopLeft="150,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Transaction Fact.PrecedenceConstraints[Constraint 4]"
+          TopLeft="150,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="300,613"
+          Size="300,656"
+          Id="Package\Load Transaction Fact"
+          TopLeft="5.50000000000009,311.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Trim Any Milliseconds"
+          TopLeft="65.5,107.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="155.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="155.5,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="155.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="233,42"
+          Id="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging"
+          TopLeft="12,107.5" />
+        <NodeLayout
+          Size="246,42"
+          Id="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_GetTransactionUpdates"
+          TopLeft="5.5,5.5" />
+        <EdgeLayout
+          Id="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging.Paths[OLE DB Source Output]"
+          TopLeft="128.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Transaction Fact\Extract Updated Transaction Data to Staging\Integration_Transaction_Staging">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

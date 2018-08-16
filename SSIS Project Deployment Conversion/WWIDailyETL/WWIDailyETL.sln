@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "WWIDailyETL", "WWIDailyETL.dtproj", "{C995E3AF-F2F4-4456-BB4B-27D0D0FEDC54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C995E3AF-F2F4-4456-BB4B-27D0D0FEDC54}.Development|Default.ActiveCfg = Development
+		{C995E3AF-F2F4-4456-BB4B-27D0D0FEDC54}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF32EBDC-A2AB-4C50-B46D-77C28DC0A889}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,1145 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{9D6513CD-14F7-46E8-8945-40504DD0FB63}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Load Fact Movement"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="64"
+  DTS:VersionGUID="{D8BC973F-0749-4EB8-AF57-5948C87CD279}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+      DTS:ObjectName="WWI_DW_Destination_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImportersDW;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_Source_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{AA59F785-4D8C-426A-8114-069868D683EC}"
+      DTS:ObjectName="WWI_Source_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImporters;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E6190A40-DB98-4DD5-8FD0-5BDA09A7B926}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8D7F970F-8CB3-43E4-B37C-2130518DF6FD}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EBCACB9E-4B5A-40C6-A975-51E8FF7BB5F7}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1E7EDDFA-00B6-4E8A-8695-08A7AE593345}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Calculate ETL Cutoff Time backup"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{0FC489B6-C3FC-46FD-970A-3857978D1796}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Calculate ETL Cutoff Time backup"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Minute&quot;, -5, GETDATE()  )" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Ensure Date Dimension includes current year"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{06D5D04F-7C30-4497-96E2-BB4B97EA5209}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Ensure Date Dimension includes current year"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+          SQLTask:SqlStatementSource="DECLARE @YearNumber int =  YEAR(SYSDATETIME());&#xA;&#xA;EXEC Integration.PopulateDateDimensionForYear @YearNumber;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Movement Fact"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{ACCD1FB8-7F96-441D-98B1-984BDD22CA83}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Movement Fact">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{787945CB-89A5-4476-9C22-13C0AF38D713}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Extract Updated Movement Data to Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Integration_GetMovementUpdates"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC Integration.GetMovementUpdates ?, ?
+WITH RESULT SETS
+(
+    (
+        [Date Key] date,
+        [WWI Stock Item Transaction ID] int,
+        [WWI Invoice ID] int,
+        [WWI Purchase Order ID] int,
+        [Quantity] int,
+        [WWI Stock Item ID] int,
+        [WWI Customer ID] int,
+        [WWI Supplier ID] int,
+        [WWI Transaction Type ID] int,
+        [Last Modified When] datetime2(7)
+    )
+);</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@LastCutoff:Input",{E6190A40-DB98-4DD5-8FD0-5BDA09A7B926};"@NewCutoff:Input",{1E7EDDFA-00B6-4E8A-8695-08A7AE593345};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_Source_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_Source_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Transaction Type ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]"
+                          name="WWI Transaction Type ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Date Key]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Date Key]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Date Key]"
+                          name="Date Key"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item Transaction ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item Transaction ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item Transaction ID]"
+                          name="WWI Stock Item Transaction ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Invoice ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]"
+                          name="WWI Invoice ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Purchase Order ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]"
+                          name="WWI Purchase Order ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Quantity]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Quantity]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Quantity]"
+                          name="Quantity"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]"
+                          name="WWI Stock Item ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          name="WWI Transaction Type ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Date Key]"
+                          dataType="dbDate"
+                          name="Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item Transaction ID]"
+                          dataType="i4"
+                          name="WWI Stock Item Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Invoice ID]"
+                          dataType="i4"
+                          name="WWI Invoice ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          name="WWI Purchase Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Quantity]"
+                          dataType="i4"
+                          name="Quantity" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item ID]"
+                          dataType="i4"
+                          name="WWI Stock Item ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modified When"
+                          scale="7" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Date Key]"
+                          dataType="dbDate"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Date Key]"
+                          name="Date Key" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item Transaction ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item Transaction ID]"
+                          name="WWI Stock Item Transaction ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Invoice ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Invoice ID]"
+                          name="WWI Invoice ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Purchase Order ID]"
+                          name="WWI Purchase Order ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Quantity]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Quantity]"
+                          name="Quantity" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item ID]"
+                          name="WWI Stock Item ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Supplier ID]"
+                          name="WWI Supplier ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Transaction Type ID]"
+                          name="WWI Transaction Type ID" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Integration_Movement_Staging"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Integration].[Movement_Staging]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Transaction Type ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Transaction Type ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Transaction Type ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Transaction Type ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[Date Key]"
+                          cachedDataType="dbDate"
+                          cachedName="Date Key"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Date Key]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Date Key]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Stock Item Transaction ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Stock Item Transaction ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item Transaction ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item Transaction ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Invoice ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Invoice ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Invoice ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Invoice ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Purchase Order ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Purchase Order ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Purchase Order ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Purchase Order ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[Quantity]"
+                          cachedDataType="i4"
+                          cachedName="Quantity"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Quantity]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Quantity]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Stock Item ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Stock Item ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Customer ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Customer ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[WWI Supplier ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Supplier ID"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[WWI Supplier ID]" />
+                        <inputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].Columns[Last Modified When]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Last Modified When"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modifed When]"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Transaction Type ID]"
+                          dataType="i4"
+                          name="WWI Transaction Type ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Movement Staging Key]"
+                          dataType="i8"
+                          name="Movement Staging Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Date Key]"
+                          dataType="dbDate"
+                          name="Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Stock Item Key]"
+                          dataType="i4"
+                          name="Stock Item Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Customer Key]"
+                          dataType="i4"
+                          name="Customer Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Supplier Key]"
+                          dataType="i4"
+                          name="Supplier Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Transaction Type Key]"
+                          dataType="i4"
+                          name="Transaction Type Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item Transaction ID]"
+                          dataType="i4"
+                          name="WWI Stock Item Transaction ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Invoice ID]"
+                          dataType="i4"
+                          name="WWI Invoice ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Purchase Order ID]"
+                          dataType="i4"
+                          name="WWI Purchase Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Quantity]"
+                          dataType="i4"
+                          name="Quantity" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item ID]"
+                          dataType="i4"
+                          name="WWI Stock Item ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Supplier ID]"
+                          dataType="i4"
+                          name="WWI Supplier ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modifed When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modifed When"
+                          scale="7" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Movement Fact\Extract Updated Movement Data to Staging.Paths[OLE DB Source Output]"
+                  endId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Get Last Movement ETL Cutoff Time"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{2847139F-2E6A-4581-BEC3-419FEBC30DD8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Last Movement ETL Cutoff Time"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLastETLCutoffTime ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="CutoffTime"
+                SQLTask:DtsVariableName="User::LastETLCutoffTime" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Get Lineage Key"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{C505BA4C-A946-4FC4-A8B2-8F5C1727B526}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Lineage Key"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLineageKey ?, ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LineageKey"
+                SQLTask:DtsVariableName="User::LineageKey" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::TargetETLCutoffTime"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Migrate Staged Movement Data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{EC481143-8BD0-462B-BD24-C2366D159C22}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Migrate Staged Movement Data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+              SQLTask:SqlStatementSource="EXEC Integration.MigrateStagedMovementData;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Set TableName to Movement"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:Description="Expression Task"
+          DTS:DTSID="{335E128C-AFBF-4744-B7E4-BBAD1F8B0995}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Set TableName to Movement"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::TableName] = &quot;Movement&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Movement Fact\Truncate Movement_Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{EEFE6D94-DABB-443C-B2D3-01111297EB87}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Truncate Movement_Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B308FBD2-C9AF-4C8A-AB06-D2A618196858}"
+              SQLTask:SqlStatementSource="DELETE FROM Integration.Movement_Staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Movement Fact.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{5CE009DF-C7DD-4C9E-B8C5-A1EF06AAE788}"
+          DTS:From="Package\Load Movement Fact\Set TableName to Movement"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Movement Fact\Get Lineage Key" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Movement Fact.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{42A5BC80-F219-4D1A-A083-076C2F6FFBB8}"
+          DTS:From="Package\Load Movement Fact\Get Lineage Key"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Movement Fact\Truncate Movement_Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Movement Fact.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{DC99E61B-0900-48BD-A05B-4506785B33C4}"
+          DTS:From="Package\Load Movement Fact\Truncate Movement_Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Load Movement Fact\Get Last Movement ETL Cutoff Time" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Movement Fact.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{1B0500B2-A34D-4D89-B54F-274EFE7480DC}"
+          DTS:From="Package\Load Movement Fact\Get Last Movement ETL Cutoff Time"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Load Movement Fact\Extract Updated Movement Data to Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Movement Fact.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{7592BA9B-C3E9-4DC5-A837-79605396EAD5}"
+          DTS:From="Package\Load Movement Fact\Extract Updated Movement Data to Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Load Movement Fact\Migrate Staged Movement Data" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Trim Any Milliseconds"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{2BDC7367-FF33-4F07-B0A7-DD9F8F41CB3D}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Trim Any Milliseconds"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Millisecond&quot;, 0 - DATEPART(&quot;Millisecond&quot;, @[User::TargetETLCutoffTime]), @[User::TargetETLCutoffTime])" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{6DDDA794-E07A-4E32-821A-FDC99277F5DE}"
+      DTS:From="Package\Calculate ETL Cutoff Time backup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Trim Any Milliseconds" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{3C8EE361-18AB-4D03-A1A4-A9B28AD0C5A8}"
+      DTS:From="Package\Ensure Date Dimension includes current year"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Movement Fact" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{7B628F29-B323-424B-A3BE-90E3C13329EC}"
+      DTS:From="Package\Trim Any Milliseconds"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Ensure Date Dimension includes current year" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Calculate ETL Cutoff Time backup"
+          TopLeft="34,5.5" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Ensure Date Dimension includes current year"
+          TopLeft="7.50000000000006,209.5" />
+        <NodeLayout
+          Size="284,42"
+          Id="Package\Load Movement Fact\Extract Updated Movement Data to Staging"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="249,42"
+          Id="Package\Load Movement Fact\Get Last Movement ETL Cutoff Time"
+          TopLeft="23.0000000000001,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Movement Fact\Get Lineage Key"
+          TopLeft="69.5,107.5" />
+        <NodeLayout
+          Size="228,42"
+          Id="Package\Load Movement Fact\Migrate Staged Movement Data"
+          TopLeft="33.5000000000001,515.5" />
+        <NodeLayout
+          Size="216,42"
+          Id="Package\Load Movement Fact\Set TableName to Movement"
+          TopLeft="39.5,5.5" />
+        <NodeLayout
+          Size="214,42"
+          Id="Package\Load Movement Fact\Truncate Movement_Staging"
+          TopLeft="40.5,209.5" />
+        <EdgeLayout
+          Id="Package\Load Movement Fact.PrecedenceConstraints[Constraint]"
+          TopLeft="147.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Movement Fact.PrecedenceConstraints[Constraint 1]"
+          TopLeft="147.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Movement Fact.PrecedenceConstraints[Constraint 2]"
+          TopLeft="147.5,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Movement Fact.PrecedenceConstraints[Constraint 3]"
+          TopLeft="147.5,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Movement Fact.PrecedenceConstraints[Constraint 4]"
+          TopLeft="147.5,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="295,613"
+          Size="295,656"
+          Id="Package\Load Movement Fact"
+          TopLeft="5.50000000000009,311.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Trim Any Milliseconds"
+          TopLeft="63,107.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="153,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="153,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="153,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Movement Fact\Extract Updated Movement Data to Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="227,42"
+          Id="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging"
+          TopLeft="12.5,107.5" />
+        <NodeLayout
+          Size="241,42"
+          Id="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_GetMovementUpdates"
+          TopLeft="5.50000000000001,5.5" />
+        <EdgeLayout
+          Id="Package\Load Movement Fact\Extract Updated Movement Data to Staging.Paths[OLE DB Source Output]"
+          TopLeft="126,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Movement Fact\Extract Updated Movement Data to Staging\Integration_Movement_Staging">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

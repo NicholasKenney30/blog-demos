@@ -1,0 +1,872 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{0257DD03-F4FC-4D23-A6A0-33A6E21C7058}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Master Load"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="65"
+  DTS:VersionGUID="{4800CC2A-C5EE-496E-9384-25327E1B46F3}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.City.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{92A2F2D7-76C3-4281-A300-916900610D53}"
+      DTS:ObjectName="Load.Dim.City.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.City.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.Customer.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{32928B2E-FF20-465E-A6BE-8FD1035153E0}"
+      DTS:ObjectName="Load.Dim.Customer.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.Customer.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.Employee.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{F92FACEC-44B4-4A83-909E-7A2E9216696C}"
+      DTS:ObjectName="Load.Dim.Employee.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.Employee.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.PaymentMethod.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{57B6E457-DDA1-4571-85E3-FB4B0E1CD036}"
+      DTS:ObjectName="Load.Dim.PaymentMethod.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.PaymentMethod.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.StockItem.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{52C88E1B-3A93-4535-BBE6-88DA767960F6}"
+      DTS:ObjectName="Load.Dim.StockItem.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.StockItem.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.Supplier.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{5E41C0CD-D8E2-4107-AC13-6C843F60A797}"
+      DTS:ObjectName="Load.Dim.Supplier.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.Supplier.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Dim.TransactionType.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{09CBE92F-815B-4842-9657-77A80C17FD07}"
+      DTS:ObjectName="Load.Dim.TransactionType.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Dim.TransactionType.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.Movement.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{B8EA1BC8-F82B-43FA-9351-8F7E07A9A1DC}"
+      DTS:ObjectName="Load.Fact.Movement.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.Movement.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.Order.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{0F5A06C0-DB19-41C7-8860-94F48250F6E8}"
+      DTS:ObjectName="Load.Fact.Order.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.Order.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.Purchase.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{6F8596F8-FAA1-4F4E-8D68-370132CC2FED}"
+      DTS:ObjectName="Load.Fact.Purchase.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.Purchase.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.Sale.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{EF33B56D-3B1A-4A4A-A7CC-87C4EC6CC94E}"
+      DTS:ObjectName="Load.Fact.Sale.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.Sale.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.StockHolding.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{15ADEE87-54DB-4C24-9E35-E23E7AFCC6D1}"
+      DTS:ObjectName="Load.Fact.StockHolding.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.StockHolding.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Load.Fact.Transaction.dtsx]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{3BF7FF73-BE04-4B97-A85E-7540FFB12968}"
+      DTS:ObjectName="Load.Fact.Transaction.dtsx">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\Users\Key2\Documents\Blog\SSIS Project Deployment Conversion\WWIDailyETL\Load.Fact.Transaction.dtsx" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E15BC487-98D1-4A19-9F31-A88AD13279DC}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{28915311-8574-4099-AF99-99773023F5B4}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{969419DB-936E-4125-88D4-87251449F91E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{210C849A-4092-444E-A5E5-90F45BA34886}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SEQ - Dim"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{00ED7E57-18D5-4B48-AD6B-4B527A1CDF5E}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ - Dim">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim City"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{9D4C5ABA-327E-4234-8617-0F72185E5CA4}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim City"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{92A2F2D7-76C3-4281-A300-916900610D53}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim Customer"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{d83a9f01-888c-4d17-b8aa-680d0a782b14}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim Customer"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{32928B2E-FF20-465E-A6BE-8FD1035153E0}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim Employee"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{bb24eb9a-a439-4d88-8209-7a96ef25cc0c}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim Employee"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{F92FACEC-44B4-4A83-909E-7A2E9216696C}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim PaymentMethod"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{13b21d63-62da-406b-b009-4957ea01913a}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim PaymentMethod"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{57B6E457-DDA1-4571-85E3-FB4B0E1CD036}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim StockItem"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{f5bf94cf-0097-45c5-970e-fbcf1abfbe34}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim StockItem"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{52C88E1B-3A93-4535-BBE6-88DA767960F6}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim Supplier"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{4e7dc1fe-df40-40da-8974-adb93362abcc}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim Supplier"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{5E41C0CD-D8E2-4107-AC13-6C843F60A797}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Dim\EPT - Dim TransactionType"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{b8fc0b90-8fc6-4b9d-9f6a-ed313fd6924d}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Dim TransactionType"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{09CBE92F-815B-4842-9657-77A80C17FD07}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{4E07CFB1-0BDA-4F95-989D-FBBE6C918A25}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim City"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\SEQ - Dim\EPT - Dim Customer" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{CC93D054-D8A5-4AEE-BD77-1F8A642B1D46}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim Customer"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\SEQ - Dim\EPT - Dim Employee" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{84D92409-7B85-436C-B2E6-26EFC1771A23}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim Employee"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\SEQ - Dim\EPT - Dim PaymentMethod" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{15CEC568-514E-4B4E-BF22-7401E446005F}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim PaymentMethod"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\SEQ - Dim\EPT - Dim StockItem" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{4A218173-863C-4F5F-8890-F79D76E07E4A}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim StockItem"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\SEQ - Dim\EPT - Dim Supplier" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Dim.PrecedenceConstraints[Constraint 5]"
+          DTS:CreationName=""
+          DTS:DTSID="{78FF0CD2-5369-48AD-8ABE-526427A8D389}"
+          DTS:From="Package\SEQ - Dim\EPT - Dim Supplier"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 5"
+          DTS:To="Package\SEQ - Dim\EPT - Dim TransactionType" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SEQ - Fact"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{BDFF17FA-A862-45A6-A96B-19A2F276B2A9}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ - Fact">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact Movement"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{e7fda9f9-7b45-4e09-a061-42413d5119f0}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact Movement"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{B8EA1BC8-F82B-43FA-9351-8F7E07A9A1DC}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact Order"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{9f3f1233-2a4f-41be-8b38-a9c9e7c97c3e}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact Order"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{0F5A06C0-DB19-41C7-8860-94F48250F6E8}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact Purchase"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{897dd75e-729e-4806-9e8f-0cc3031d114c}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact Purchase"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{6F8596F8-FAA1-4F4E-8D68-370132CC2FED}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact Sale"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{8f81b656-5427-4a37-9884-db4a1eb50469}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact Sale"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{EF33B56D-3B1A-4A4A-A7CC-87C4EC6CC94E}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact StockHolding"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{cb29656f-a604-465f-add0-383c370327a9}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact StockHolding"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{15ADEE87-54DB-4C24-9E35-E23E7AFCC6D1}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ - Fact\EPT - Fact Transaction"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:Description="Execute Package Task"
+          DTS:DTSID="{14da26f7-5eba-43da-9baa-3024b29eec46}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EPT - Fact Transaction"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <Connection>{3BF7FF73-BE04-4B97-A85E-7540FFB12968}</Connection>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Fact.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{DABC49B6-3043-4DA8-919E-870D4529F335}"
+          DTS:From="Package\SEQ - Fact\EPT - Fact Movement"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\SEQ - Fact\EPT - Fact Order" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Fact.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{09DBBF9E-ABA5-45EB-8EAC-74D3FE8F9826}"
+          DTS:From="Package\SEQ - Fact\EPT - Fact Order"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\SEQ - Fact\EPT - Fact Purchase" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Fact.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{CA054957-6C35-4571-8107-60A5F08C65C4}"
+          DTS:From="Package\SEQ - Fact\EPT - Fact Purchase"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\SEQ - Fact\EPT - Fact Sale" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Fact.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{10C47BF0-41BD-4D30-8698-09EB38087911}"
+          DTS:From="Package\SEQ - Fact\EPT - Fact Sale"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\SEQ - Fact\EPT - Fact StockHolding" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ - Fact.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{EDECD942-4922-448E-95E6-0CEDEB03AFE2}"
+          DTS:From="Package\SEQ - Fact\EPT - Fact StockHolding"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\SEQ - Fact\EPT - Fact Transaction" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{D53BE5A2-4025-45DF-924D-A5B1FB871B04}"
+      DTS:From="Package\SEQ - Dim"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\SEQ - Fact" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim City"
+          TopLeft="5.5,5.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint]"
+          TopLeft="97,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim Customer"
+          TopLeft="5.50000000000001,107.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint 1]"
+          TopLeft="97,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim Employee"
+          TopLeft="5.50000000000003,209.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint 2]"
+          TopLeft="97,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim PaymentMethod"
+          TopLeft="5.50000000000004,311.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint 3]"
+          TopLeft="97.0000000000001,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim StockItem"
+          TopLeft="5.50000000000006,413.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint 4]"
+          TopLeft="97.0000000000001,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim Supplier"
+          TopLeft="5.50000000000007,515.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Dim.PrecedenceConstraints[Constraint 5]"
+          TopLeft="97.0000000000001,557.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183,42"
+          Id="Package\SEQ - Dim\EPT - Dim TransactionType"
+          TopLeft="5.50000000000007,617.5" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="194,714"
+          Size="194,758"
+          Id="Package\SEQ - Dim"
+          TopLeft="10.0000000000001,5.5" />
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact Transaction"
+          TopLeft="5.50000000000006,515.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Fact.PrecedenceConstraints[Constraint 4]"
+          TopLeft="101.5,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact StockHolding"
+          TopLeft="5.50000000000006,413.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Fact.PrecedenceConstraints[Constraint 3]"
+          TopLeft="101.5,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact Sale"
+          TopLeft="5.50000000000004,311.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Fact.PrecedenceConstraints[Constraint 2]"
+          TopLeft="101.5,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact Purchase"
+          TopLeft="5.50000000000003,209.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Fact.PrecedenceConstraints[Constraint 1]"
+          TopLeft="101.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact Order"
+          TopLeft="5.50000000000001,107.5" />
+        <EdgeLayout
+          Id="Package\SEQ - Fact.PrecedenceConstraints[Constraint]"
+          TopLeft="101.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="192,42"
+          Id="Package\SEQ - Fact\EPT - Fact Movement"
+          TopLeft="5.5,5.5" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="203,612"
+          Size="203,656"
+          Id="Package\SEQ - Fact"
+          TopLeft="5.50000000000018,823.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="107,763.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

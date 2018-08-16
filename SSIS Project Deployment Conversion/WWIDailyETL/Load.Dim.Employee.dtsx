@@ -1,0 +1,1057 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{CDBC96E2-6969-4A13-AE80-0D9E328EF59A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Load Dim Employee"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="65"
+  DTS:VersionGUID="{E70BA736-3C36-4B26-BCB0-AF794699F2AE}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+      DTS:ObjectName="WWI_DW_Destination_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImportersDW;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_Source_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{72D04F56-73B6-43A9-9247-735B31667ABC}"
+      DTS:ObjectName="WWI_Source_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImporters;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6081E568-E886-40AD-9111-841DB0C54BA1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{640C616F-12F4-4196-B87C-26902AD675DB}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{66EACAE2-A9DF-47DC-803E-E02ED63B77DE}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CBFC770A-D3E6-46AD-9E83-599FA8073483}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Calculate ETL Cutoff Time backup"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{C33E58F0-9405-4231-8650-8F6A790E0C77}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Calculate ETL Cutoff Time backup"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Minute&quot;, -5, GETDATE()  )" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Ensure Date Dimension includes current year"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{B5F56371-B47D-4569-9564-288D6127AE7A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Ensure Date Dimension includes current year"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+          SQLTask:SqlStatementSource="DECLARE @YearNumber int =  YEAR(SYSDATETIME());&#xA;&#xA;EXEC Integration.PopulateDateDimensionForYear @YearNumber;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Employee Dimension"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{A5AEA39C-CB3B-491D-98D6-0E745B5D48EF}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Employee Dimension">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{B64A5497-B4A8-46E8-93CC-F99B02AEF8EF}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Extract Updated Employee Data to Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Integration_Employee_Staging"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Integration].[Employee_Staging]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Valid From]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Valid From"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid From]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid From]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Valid To]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Valid To"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid To]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid To]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[WWI Employee ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Employee ID"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Employee ID]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[WWI Employee ID]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Employee]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Employee"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Employee]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Employee]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Preferred Name]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Preferred Name"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Preferred Name]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Preferred Name]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Is Salesperson]"
+                          cachedDataType="bool"
+                          cachedName="Is Salesperson"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Is Salesperson]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Is Salesperson]" />
+                        <inputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].Columns[Photo]"
+                          cachedDataType="image"
+                          cachedName="Photo"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Photo]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Photo]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          name="Valid From"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          name="Valid To"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Employee Staging Key]"
+                          dataType="i4"
+                          name="Employee Staging Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Employee ID]"
+                          dataType="i4"
+                          name="WWI Employee ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Employee]"
+                          dataType="wstr"
+                          length="50"
+                          name="Employee" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Preferred Name]"
+                          dataType="wstr"
+                          length="50"
+                          name="Preferred Name" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Is Salesperson]"
+                          dataType="bool"
+                          name="Is Salesperson" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Photo]"
+                          dataType="image"
+                          name="Photo" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Integration_GetEmployeeUpdates"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC Integration.GetEmployeeUpdates ?, ?
+WITH RESULT SETS
+(
+    (
+        [WWI Employee ID] int, 
+        Employee nvarchar(50), 
+        [Preferred Name] nvarchar(50), 
+        [Is Salesperson] bit, 
+        Photo varbinary(max), 
+        [Valid From] datetime2(7), 
+        [Valid To] datetime2(7)
+    )
+);</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@LastCutoff:Input",{6081E568-E886-40AD-9111-841DB0C54BA1};"@NewCutoff:Input",{CBFC770A-D3E6-46AD-9E83-599FA8073483};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_Source_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_Source_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid From]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid From]"
+                          name="Valid From"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid To]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Valid To]"
+                          name="Valid To"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[WWI Employee ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Employee ID]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[WWI Employee ID]"
+                          name="WWI Employee ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Employee]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Employee]"
+                          length="50"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Employee]"
+                          name="Employee"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Preferred Name]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Preferred Name]"
+                          length="50"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Preferred Name]"
+                          name="Preferred Name"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Is Salesperson]"
+                          dataType="bool"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Is Salesperson]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Is Salesperson]"
+                          name="Is Salesperson"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Photo]"
+                          dataType="image"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Photo]"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].Columns[Photo]"
+                          name="Photo"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          name="Valid From"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          name="Valid To"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Employee ID]"
+                          dataType="i4"
+                          name="WWI Employee ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Employee]"
+                          dataType="wstr"
+                          length="50"
+                          name="Employee" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Preferred Name]"
+                          dataType="wstr"
+                          length="50"
+                          name="Preferred Name" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Is Salesperson]"
+                          dataType="bool"
+                          name="Is Salesperson" />
+                        <externalMetadataColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output].ExternalColumns[Photo]"
+                          dataType="image"
+                          name="Photo" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Employee ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Employee ID]"
+                          name="WWI Employee ID" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Employee]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Employee]"
+                          name="Employee" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Preferred Name]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Preferred Name]"
+                          name="Preferred Name" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Is Salesperson]"
+                          dataType="bool"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Is Salesperson]"
+                          name="Is Salesperson" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Photo]"
+                          dataType="image"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Photo]"
+                          name="Photo" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Valid From]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Valid From]"
+                          name="Valid From"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Valid To]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[Valid To]"
+                          name="Valid To"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging.Paths[OLE DB Source Output]"
+                  endId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Get Last Employee ETL Cutoff Time"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{11A94DFC-5FEC-459C-A354-0D3495CD3DEC}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Last Employee ETL Cutoff Time"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLastETLCutoffTime ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="CutoffTime"
+                SQLTask:DtsVariableName="User::LastETLCutoffTime" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Get Lineage Key"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{0EAD21CC-78BB-4F56-B76B-FEDF37BB1CAA}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Lineage Key"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLineageKey ?, ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LineageKey"
+                SQLTask:DtsVariableName="User::LineageKey" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::TargetETLCutoffTime"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Migrate Staged Employee Data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{5075D7CB-C33A-43D9-AF90-222BB69E96F7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Migrate Staged Employee Data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+              SQLTask:SqlStatementSource="EXEC Integration.MigrateStagedEmployeeData;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Set TableName to Employee"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:Description="Expression Task"
+          DTS:DTSID="{1DA9D3DA-03E2-42FA-912F-3F07A2298A48}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Set TableName to Employee"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::TableName] = &quot;Employee&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Employee Dimension\Truncate Employee_Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{380DB955-D1C4-4263-9186-A7D709C2EEE3}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Truncate Employee_Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6129EB48-EF4B-4883-AE75-1F90E4031A76}"
+              SQLTask:SqlStatementSource="DELETE FROM Integration.Employee_Staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Employee Dimension.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{69DCC95D-DC8D-4CE9-87C2-AC39193FF7A0}"
+          DTS:From="Package\Load Employee Dimension\Set TableName to Employee"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Employee Dimension\Get Lineage Key" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{E8373725-461B-4886-99F5-ABF923292FA0}"
+          DTS:From="Package\Load Employee Dimension\Get Lineage Key"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Employee Dimension\Truncate Employee_Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{53FDE9E5-DDF1-4232-A8D0-606942FADAD8}"
+          DTS:From="Package\Load Employee Dimension\Truncate Employee_Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Load Employee Dimension\Get Last Employee ETL Cutoff Time" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{7CCD78F3-07EA-48A1-83DF-4811049D3117}"
+          DTS:From="Package\Load Employee Dimension\Get Last Employee ETL Cutoff Time"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Load Employee Dimension\Extract Updated Employee Data to Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{0F3645CE-304F-4BD2-80D1-DCA1D48B1E06}"
+          DTS:From="Package\Load Employee Dimension\Extract Updated Employee Data to Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Load Employee Dimension\Migrate Staged Employee Data" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Trim Any Milliseconds"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{5F9A419C-59B8-4C4B-ACA5-8410C3C0F386}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Trim Any Milliseconds"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Millisecond&quot;, 0 - DATEPART(&quot;Millisecond&quot;, @[User::TargetETLCutoffTime]), @[User::TargetETLCutoffTime])" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{2CDD08A6-6B1D-4636-8879-242654054C22}"
+      DTS:From="Package\Calculate ETL Cutoff Time backup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Trim Any Milliseconds" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{E77A31AD-1DB5-4F4D-A38E-36D94BF39846}"
+      DTS:From="Package\Ensure Date Dimension includes current year"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Employee Dimension" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{39E07AC8-D530-496B-8A35-46866BC9CF38}"
+      DTS:From="Package\Trim Any Milliseconds"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Ensure Date Dimension includes current year" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Calculate ETL Cutoff Time backup"
+          TopLeft="32,5.5" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Ensure Date Dimension includes current year"
+          TopLeft="5.50000000000006,209.5" />
+        <NodeLayout
+          Size="280,42"
+          Id="Package\Load Employee Dimension\Extract Updated Employee Data to Staging"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="246,42"
+          Id="Package\Load Employee Dimension\Get Last Employee ETL Cutoff Time"
+          TopLeft="22.5000000000001,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Employee Dimension\Get Lineage Key"
+          TopLeft="67.5,107.5" />
+        <NodeLayout
+          Size="224,42"
+          Id="Package\Load Employee Dimension\Migrate Staged Employee Data"
+          TopLeft="33.5000000000001,515.5" />
+        <NodeLayout
+          Size="212,42"
+          Id="Package\Load Employee Dimension\Set TableName to Employee"
+          TopLeft="39.5,5.5" />
+        <NodeLayout
+          Size="211,42"
+          Id="Package\Load Employee Dimension\Truncate Employee_Staging"
+          TopLeft="40,209.5" />
+        <EdgeLayout
+          Id="Package\Load Employee Dimension.PrecedenceConstraints[Constraint]"
+          TopLeft="145.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 1]"
+          TopLeft="145.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 2]"
+          TopLeft="145.5,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 3]"
+          TopLeft="145.5,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Employee Dimension.PrecedenceConstraints[Constraint 4]"
+          TopLeft="145.5,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="291,613"
+          Size="291,656"
+          Id="Package\Load Employee Dimension"
+          TopLeft="5.50000000000009,311.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Trim Any Milliseconds"
+          TopLeft="61,107.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="151,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="151,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="151,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Employee Dimension\Extract Updated Employee Data to Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="237,42"
+          Id="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_GetEmployeeUpdates"
+          TopLeft="5.50000000000001,5.5" />
+        <NodeLayout
+          Size="224,42"
+          Id="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging"
+          TopLeft="12,107.5" />
+        <EdgeLayout
+          Id="Package\Load Employee Dimension\Extract Updated Employee Data to Staging.Paths[OLE DB Source Output]"
+          TopLeft="124,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Employee Dimension\Extract Updated Employee Data to Staging\Integration_Employee_Staging">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

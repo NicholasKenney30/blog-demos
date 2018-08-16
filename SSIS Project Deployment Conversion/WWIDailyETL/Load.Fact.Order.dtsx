@@ -1,0 +1,1446 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/10/2016 11:13:19 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GREG7440WIN10"
+  DTS:CreatorName="GREG7440WIN10\Greg"
+  DTS:DTSID="{E83F7449-8C89-4B78-92D8-AB459E8F7F19}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0800.60"
+  DTS:LocaleID="3081"
+  DTS:ObjectName="Load Fact Order"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="64"
+  DTS:VersionGUID="{D8CBF88A-A0C9-49E4-8F6C-A9F96F48C254}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+      DTS:ObjectName="WWI_DW_Destination_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImportersDW;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[WWI_Source_DB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{467BBACA-8AF1-4611-8929-359C9574C929}"
+      DTS:ObjectName="WWI_Source_DB">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=WideWorldImporters;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1F72E9EA-D6EF-4BB5-A485-EF5CC750734F}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/11/2016 10:39:10 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{84F0355A-4858-4929-A43B-E06C9F034F96}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{99324285-471E-47E6-8112-72B075F3C030}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B62BB1A0-B528-461F-AAA7-E32CD3EEC893}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="TargetETLCutoffTime">
+      <DTS:VariableValue
+        DTS:DataType="7">4/13/2016 11:25:23 AM</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Calculate ETL Cutoff Time backup"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{22D606AA-64E0-40F6-B53A-C4EE9A373539}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Calculate ETL Cutoff Time backup"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Minute&quot;, -5, GETDATE()  )" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Ensure Date Dimension includes current year"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{DFD9BDC5-462E-4987-ADE3-84CC10B2CC25}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Ensure Date Dimension includes current year"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+          SQLTask:SqlStatementSource="DECLARE @YearNumber int =  YEAR(SYSDATETIME());&#xA;&#xA;EXEC Integration.PopulateDateDimensionForYear @YearNumber;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Order Fact"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{8560FC7C-38CD-459C-BB55-3C9439184FAB}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Order Fact">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Extract Updated Order Data to Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{1E7D7519-5B15-428D-8A5D-F815792C19B7}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Extract Updated Order Data to Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Integration_GetOrderUpdates"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">EXEC Integration.GetOrderUpdates ?, ?
+WITH RESULT SETS
+(
+    (
+        [Order Date Key] date,
+        [Picked Date Key] date,
+        [WWI Order ID] int,
+        [WWI Backorder ID] int,
+        [Description] nvarchar(100),
+        [Package] nvarchar(50),
+        Quantity int,
+        [Unit Price] decimal(18,2),
+        [Tax Rate] decimal(18,3),
+        [Total Excluding Tax] decimal(18,2),
+        [Tax Amount] decimal(18,2),
+        [Total Including Tax] decimal(18,2),
+        [WWI City ID] int,
+        [WWI Customer ID] int,
+        [WWI Stock Item ID] int,
+        [WWI Salesperson ID] int,
+        [WWI Picker ID] int,
+        [Last Modified When] datetime2(7)
+
+    )
+);</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@LastCutoff:Input",{1F72E9EA-D6EF-4BB5-A485-EF5CC750734F};"@NewCutoff:Input",{B62BB1A0-B528-461F-AAA7-E32CD3EEC893};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_Source_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_Source_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Quantity]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Quantity]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Quantity]"
+                          name="Quantity"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]"
+                          name="WWI Stock Item ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Order Date Key]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Order Date Key]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Order Date Key]"
+                          name="Order Date Key"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Picked Date Key]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Picked Date Key]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Picked Date Key]"
+                          name="Picked Date Key"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Order ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Order ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Order ID]"
+                          name="WWI Order ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Backorder ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Backorder ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Backorder ID]"
+                          name="WWI Backorder ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Description]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Description]"
+                          length="100"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Description]"
+                          name="Description"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Package]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Package]"
+                          length="50"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Package]"
+                          name="Package"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Unit Price]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Unit Price]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Unit Price]"
+                          name="Unit Price"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Rate]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Rate]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Rate]"
+                          name="Tax Rate"
+                          precision="18"
+                          scale="3"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Excluding Tax]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Amount]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Including Tax]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI City ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI City ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI City ID]"
+                          name="WWI City ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Salesperson ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Salesperson ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Salesperson ID]"
+                          name="WWI Salesperson ID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Picker ID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Picker ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Picker ID]"
+                          name="WWI Picker ID"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Quantity]"
+                          dataType="i4"
+                          name="Quantity" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Stock Item ID]"
+                          dataType="i4"
+                          name="WWI Stock Item ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modified When"
+                          scale="7" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Order Date Key]"
+                          dataType="dbDate"
+                          name="Order Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Picked Date Key]"
+                          dataType="dbDate"
+                          name="Picked Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Order ID]"
+                          dataType="i4"
+                          name="WWI Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Backorder ID]"
+                          dataType="i4"
+                          name="WWI Backorder ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Description]"
+                          dataType="wstr"
+                          length="100"
+                          name="Description" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Package]"
+                          dataType="wstr"
+                          length="50"
+                          name="Package" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Unit Price]"
+                          dataType="numeric"
+                          name="Unit Price"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Rate]"
+                          dataType="numeric"
+                          name="Tax Rate"
+                          precision="18"
+                          scale="3" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Excluding Tax]"
+                          dataType="numeric"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Tax Amount]"
+                          dataType="numeric"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[Total Including Tax]"
+                          dataType="numeric"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI City ID]"
+                          dataType="i4"
+                          name="WWI City ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Salesperson ID]"
+                          dataType="i4"
+                          name="WWI Salesperson ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].ExternalColumns[WWI Picker ID]"
+                          dataType="i4"
+                          name="WWI Picker ID" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Order Date Key]"
+                          dataType="dbDate"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Order Date Key]"
+                          name="Order Date Key" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Picked Date Key]"
+                          dataType="dbDate"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Picked Date Key]"
+                          name="Picked Date Key" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Order ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Order ID]"
+                          name="WWI Order ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Backorder ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Backorder ID]"
+                          name="WWI Backorder ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Description]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Description]"
+                          name="Description" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Package]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Package]"
+                          name="Package" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Quantity]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Quantity]"
+                          name="Quantity" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Unit Price]"
+                          dataType="numeric"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Unit Price]"
+                          name="Unit Price"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Rate]"
+                          dataType="numeric"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Rate]"
+                          name="Tax Rate"
+                          precision="18"
+                          scale="3" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Total Excluding Tax]"
+                          dataType="numeric"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Total Excluding Tax]"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Amount]"
+                          dataType="numeric"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Tax Amount]"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Total Including Tax]"
+                          dataType="numeric"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Total Including Tax]"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI City ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI City ID]"
+                          name="WWI City ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Stock Item ID]"
+                          name="WWI Stock Item ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Customer ID]"
+                          name="WWI Customer ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Salesperson ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Salesperson ID]"
+                          name="WWI Salesperson ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Picker ID]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[WWI Picker ID]"
+                          name="WWI Picker ID" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[Last Modified When]"
+                          name="Last Modified When"
+                          scale="7" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Integration_Order_Staging"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Integration].[Order_Staging]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      connectionManagerRefId="Package.ConnectionManagers[WWI_DW_Destination_DB]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Quantity]"
+                          cachedDataType="i4"
+                          cachedName="Quantity"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Quantity]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Quantity]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Stock Item ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Stock Item ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Stock Item ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Customer ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Customer ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Customer ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Order Date Key]"
+                          cachedDataType="dbDate"
+                          cachedName="Order Date Key"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Order Date Key]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Order Date Key]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Picked Date Key]"
+                          cachedDataType="dbDate"
+                          cachedName="Picked Date Key"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Picked Date Key]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Picked Date Key]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Order ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Order ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Order ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Order ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Backorder ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Backorder ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Backorder ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Backorder ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Description]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Description"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Description]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Description]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Package]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Package"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Package]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Package]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Unit Price]"
+                          cachedDataType="numeric"
+                          cachedName="Unit Price"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Unit Price]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Unit Price]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Tax Rate]"
+                          cachedDataType="numeric"
+                          cachedName="Tax Rate"
+                          cachedPrecision="18"
+                          cachedScale="3"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Rate]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Rate]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Total Excluding Tax]"
+                          cachedDataType="numeric"
+                          cachedName="Total Excluding Tax"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Excluding Tax]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Excluding Tax]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Tax Amount]"
+                          cachedDataType="numeric"
+                          cachedName="Tax Amount"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Amount]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Tax Amount]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Total Including Tax]"
+                          cachedDataType="numeric"
+                          cachedName="Total Including Tax"
+                          cachedPrecision="18"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Including Tax]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Total Including Tax]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI City ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI City ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI City ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI City ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Salesperson ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Salesperson ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Salesperson ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Salesperson ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[WWI Picker ID]"
+                          cachedDataType="i4"
+                          cachedName="WWI Picker ID"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Picker ID]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[WWI Picker ID]" />
+                        <inputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].Columns[Last Modified When]"
+                          cachedDataType="dbTimeStamp2"
+                          cachedName="Last Modified When"
+                          cachedScale="7"
+                          externalMetadataColumnId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modified When]"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output].Columns[Last Modified When]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Stock Item Key]"
+                          dataType="i4"
+                          name="Stock Item Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Customer Key]"
+                          dataType="i4"
+                          name="Customer Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Quantity]"
+                          dataType="i4"
+                          name="Quantity" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Stock Item ID]"
+                          dataType="i4"
+                          name="WWI Stock Item ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Customer ID]"
+                          dataType="i4"
+                          name="WWI Customer ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Order Staging Key]"
+                          dataType="i8"
+                          name="Order Staging Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[City Key]"
+                          dataType="i4"
+                          name="City Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Order Date Key]"
+                          dataType="dbDate"
+                          name="Order Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Picked Date Key]"
+                          dataType="dbDate"
+                          name="Picked Date Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Salesperson Key]"
+                          dataType="i4"
+                          name="Salesperson Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Picker Key]"
+                          dataType="i4"
+                          name="Picker Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Order ID]"
+                          dataType="i4"
+                          name="WWI Order ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Backorder ID]"
+                          dataType="i4"
+                          name="WWI Backorder ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Description]"
+                          dataType="wstr"
+                          length="100"
+                          name="Description" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Package]"
+                          dataType="wstr"
+                          length="50"
+                          name="Package" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Unit Price]"
+                          dataType="numeric"
+                          name="Unit Price"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Rate]"
+                          dataType="numeric"
+                          name="Tax Rate"
+                          precision="18"
+                          scale="3" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Excluding Tax]"
+                          dataType="numeric"
+                          name="Total Excluding Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Tax Amount]"
+                          dataType="numeric"
+                          name="Tax Amount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Total Including Tax]"
+                          dataType="numeric"
+                          name="Total Including Tax"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Lineage Key]"
+                          dataType="i4"
+                          name="Lineage Key" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI City ID]"
+                          dataType="i4"
+                          name="WWI City ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Salesperson ID]"
+                          dataType="i4"
+                          name="WWI Salesperson ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[WWI Picker ID]"
+                          dataType="i4"
+                          name="WWI Picker ID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input].ExternalColumns[Last Modified When]"
+                          dataType="dbTimeStamp2"
+                          name="Last Modified When"
+                          scale="7" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Order Fact\Extract Updated Order Data to Staging.Paths[OLE DB Source Output]"
+                  endId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging.Inputs[OLE DB Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Get Last Movement ETL Cutoff Time"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{7409F7D4-460C-47D0-B302-ED464841E919}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Last Movement ETL Cutoff Time"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLastETLCutoffTime ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="CutoffTime"
+                SQLTask:DtsVariableName="User::LastETLCutoffTime" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Get Lineage Key"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{1B7E2D45-6B52-41AF-813C-968C7053D258}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Lineage Key"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+              SQLTask:SqlStatementSource="EXEC Integration.GetLineageKey ?, ?;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LineageKey"
+                SQLTask:DtsVariableName="User::LineageKey" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::TableName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::TargetETLCutoffTime"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Migrate Staged Order Data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{0976C35E-E67B-46AD-9A50-7071E7A3671A}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Migrate Staged Order Data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+              SQLTask:SqlStatementSource="EXEC Integration.MigrateStagedOrderData;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Set TableName to Order"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:Description="Expression Task"
+          DTS:DTSID="{C6901F14-128C-47F7-9281-EF3696E91C6D}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Set TableName to Order"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::TableName] = &quot;Order&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Order Fact\Truncate Order_Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{F4A6F0BF-9FAC-4AB9-A941-6AFEDDFDE277}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Truncate Order_Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{99484572-A9EB-438C-AC9E-EAEE51C0D2FE}"
+              SQLTask:SqlStatementSource="DELETE FROM Integration.Order_Staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Order Fact.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{33E0C1FF-2C43-4AEF-9051-169BC09510D3}"
+          DTS:From="Package\Load Order Fact\Set TableName to Order"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Order Fact\Get Lineage Key" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Order Fact.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{FD784066-4075-4E9B-AB01-6275ABD045D5}"
+          DTS:From="Package\Load Order Fact\Get Lineage Key"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Order Fact\Truncate Order_Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Order Fact.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{C6477F2B-B341-479B-B762-1EA232E3F826}"
+          DTS:From="Package\Load Order Fact\Truncate Order_Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Load Order Fact\Get Last Movement ETL Cutoff Time" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Order Fact.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{9CF5259F-3D8B-4C11-A73E-4531E6458852}"
+          DTS:From="Package\Load Order Fact\Get Last Movement ETL Cutoff Time"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Load Order Fact\Extract Updated Order Data to Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Order Fact.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{0FD31D80-AFD9-44D3-97A1-CC93645A67D0}"
+          DTS:From="Package\Load Order Fact\Extract Updated Order Data to Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Load Order Fact\Migrate Staged Order Data" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Trim Any Milliseconds"
+      DTS:CreationName="Microsoft.ExpressionTask"
+      DTS:Description="Expression Task"
+      DTS:DTSID="{AE4B0C2B-7947-46E5-AF3E-E32DEE3F37BF}"
+      DTS:ExecutableType="Microsoft.ExpressionTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Trim Any Milliseconds"
+      DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2016 RC2; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExpressionTask
+          Expression="@[User::TargetETLCutoffTime] = DATEADD(&quot;Millisecond&quot;, 0 - DATEPART(&quot;Millisecond&quot;, @[User::TargetETLCutoffTime]), @[User::TargetETLCutoffTime])" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{81A235F7-27EB-43FA-9DE6-5C4B0031FD2C}"
+      DTS:From="Package\Calculate ETL Cutoff Time backup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Trim Any Milliseconds" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{88ADA64A-B393-4192-8FC3-0250773D6C25}"
+      DTS:From="Package\Ensure Date Dimension includes current year"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Order Fact" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{F5B5759A-DB29-4868-B960-EBDC1C48FE9E}"
+      DTS:From="Package\Trim Any Milliseconds"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Ensure Date Dimension includes current year" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="238,42"
+          Id="Package\Calculate ETL Cutoff Time backup"
+          TopLeft="32,5.5" />
+        <NodeLayout
+          Size="291,42"
+          Id="Package\Ensure Date Dimension includes current year"
+          TopLeft="5.50000000000003,209.5" />
+        <NodeLayout
+          Size="261,42"
+          Id="Package\Load Order Fact\Extract Updated Order Data to Staging"
+          TopLeft="5.50000000000006,413.5" />
+        <NodeLayout
+          Size="249,42"
+          Id="Package\Load Order Fact\Get Last Movement ETL Cutoff Time"
+          TopLeft="11.5000000000001,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Order Fact\Get Lineage Key"
+          TopLeft="58,107.5" />
+        <NodeLayout
+          Size="205,42"
+          Id="Package\Load Order Fact\Migrate Staged Order Data"
+          TopLeft="33.5000000000001,515.5" />
+        <NodeLayout
+          Size="193,42"
+          Id="Package\Load Order Fact\Set TableName to Order"
+          TopLeft="39.5,5.5" />
+        <NodeLayout
+          Size="192,42"
+          Id="Package\Load Order Fact\Truncate Order_Staging"
+          TopLeft="40,209.5" />
+        <EdgeLayout
+          Id="Package\Load Order Fact.PrecedenceConstraints[Constraint]"
+          TopLeft="136,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Order Fact.PrecedenceConstraints[Constraint 1]"
+          TopLeft="136,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Order Fact.PrecedenceConstraints[Constraint 2]"
+          TopLeft="136,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Order Fact.PrecedenceConstraints[Constraint 3]"
+          TopLeft="136,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Order Fact.PrecedenceConstraints[Constraint 4]"
+          TopLeft="136,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="272,613"
+          Size="272,656"
+          Id="Package\Load Order Fact"
+          TopLeft="15.0000000000001,311.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Trim Any Milliseconds"
+          TopLeft="61,107.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="151,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="151,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="151,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Order Fact\Extract Updated Order Data to Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="218,42"
+          Id="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_GetOrderUpdates"
+          TopLeft="5.50000000000001,5.5" />
+        <NodeLayout
+          Size="205,42"
+          Id="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging"
+          TopLeft="12,107.5" />
+        <EdgeLayout
+          Id="Package\Load Order Fact\Extract Updated Order Data to Staging.Paths[OLE DB Source Output]"
+          TopLeft="114.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Order Fact\Extract Updated Order Data to Staging\Integration_Order_Staging">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
